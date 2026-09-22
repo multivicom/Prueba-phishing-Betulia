@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WhatsApp · Documento compartido</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e8edf1;font-family:Arial,sans-serif;color:#18212a}
+.wrap{max-width:430px;margin:auto;min-height:100vh;background:#fff;box-shadow:0 0 30px #0001}
+.top{background:#075e54;color:white;padding:18px 20px;font-size:19px;font-weight:bold}
+.card{padding:28px 22px;text-align:center}.wa{font-size:52px;margin:10px}
+.doc{border:1px solid #ddd;border-radius:10px;padding:20px;margin:22px 0;text-align:left}
+button{border:0;background:#128c7e;color:#fff;padding:14px 24px;border-radius:8px;font-size:16px;font-weight:bold}
+.small{font-size:12px;color:#68737c;margin-top:22px}
+#result{display:none}.grid{text-align:left;margin-top:20px}.row{padding:10px 0;border-bottom:1px solid #eee}.k{color:#68737c;font-size:12px}.v{font-family:monospace;word-break:break-word}
+.warn{background:#fff4d6;border-left:4px solid #e2a400;padding:14px;text-align:left;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top">WhatsApp · Documento compartido</div>
+<div id="landing" class="card">
+<div class="wa">📄</div>
+<h2>Documento compartido contigo</h2>
+<p>Un contacto ha compartido un documento. Pulsa para visualizarlo.</p>
+<div class="doc"><b>Documento_Importante.pdf</b><br><span class="small">Documento disponible para visualizar</span></div>
+<button id="open">Ver documento</button>
+<p class="small">Esta página forma parte de una demostración de seguridad.</p>
+</div>
+<div id="result" class="card">
+<div class="wa">🔎</div>
+<h2>¡Era una simulación!</h2>
+<p>Al abrir una página web, el navegador puede revelar automáticamente cierta información técnica.</p>
+<div class="grid" id="data"></div>
+<div class="warn"><b>Lección:</b> un código QR no es una garantía de seguridad. Antes de abrir un enlace, comprueba su destino y evita introducir credenciales si no esperabas la página.</div>
+<p class="small">Demostración educativa. Esta versión no solicita contraseñas, cookies, archivos, cámara, micrófono ni ubicación precisa y no envía los datos del navegador a un servidor.</p>
+</div>
+</div>
+<script>
+function esc(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.getElementById('open').onclick=()=>{
+ const n=navigator, s=screen;
+ const data=[
+  ['Sistema / plataforma',n.platform||'No disponible'],
+  ['Navegador',n.userAgent],
+  ['Idioma',n.language||'No disponible'],
+  ['Zona horaria',Intl.DateTimeFormat().resolvedOptions().timeZone||'No disponible'],
+  ['Pantalla',`${s.width} × ${s.height}`],
+  ['Ventana',`${innerWidth} × ${innerHeight}`],
+  ['Hora local',new Date().toLocaleString()]
+ ];
+ document.getElementById('data').innerHTML=data.map(([k,v])=>`<div class="row"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`).join('');
+ document.getElementById('landing').style.display='none';
+ document.getElementById('result').style.display='block';
+};
+</script>
+</body>
+</html>
