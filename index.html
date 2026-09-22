@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WhatsApp · Bono Adulto Mayor</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e8edf1;font-family:Arial,Helvetica,sans-serif;color:#18212a}
+.wrap{max-width:430px;margin:auto;min-height:100vh;background:#fff;box-shadow:0 0 30px #0001}
+.top{background:#075e54;color:#fff;padding:18px 20px;font-size:19px;font-weight:bold}
+.body{padding:24px 22px;text-align:center}
+.hero{width:100%;height:150px;object-fit:contain;background:#fff;margin-bottom:15px}
+.wa{font-size:45px;margin:5px}
+.card{border:1px solid #ddd;border-radius:10px;padding:18px;margin:18px 0;text-align:left;background:#fafafa}
+button{border:0;background:#20cf65;color:#062d17;padding:14px 24px;border-radius:24px;font-size:16px;font-weight:bold;cursor:pointer}
+.small{font-size:12px;color:#68737c;margin-top:20px;line-height:1.5}
+#result{display:none}.grid{text-align:left;margin-top:18px}.row{padding:10px 0;border-bottom:1px solid #eee}.k{color:#68737c;font-size:12px}.v{font-family:monospace;word-break:break-word}
+.notice{background:#fff4d6;border-left:4px solid #e2a400;padding:14px;text-align:left;margin-top:20px;font-size:14px}
+.footer{background:#101b21;color:#ddd;padding:28px 22px;font-size:12px;text-align:center}
+.consent{margin-top:18px;text-align:left;font-size:13px;line-height:1.45}
+.consent input{margin-right:8px}
+.status{margin-top:12px;font-size:12px;color:#555}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">WhatsApp · Bono Adulto Mayor</div>
+
+  <section id="landing" class="body">
+    <img class="hero" src="alcaldia_betulia.png" alt="Imagen de referencia de Alcaldía de Betulia">
+    <div class="wa">📄</div>
+    <h2>Bono Adulto Mayor</h2>
+    <p>Se ha compartido contigo información relacionada con el programa.</p>
+
+    <div class="card">
+      <b>Información disponible</b><br>
+      Consulta el documento informativo sobre el Bono Adulto Mayor.
+    </div>
+
+    <button id="open">Abrir aplicación</button>
+    <p class="small">Demostración educativa de seguridad. No es un trámite oficial.</p>
+  </section>
+
+  <section id="result" class="body">
+    <div class="wa">🔎</div>
+    <h2>¡Era una simulación!</h2>
+    <p>El navegador puede revelar automáticamente información técnica a una página web, incluso antes de conceder permisos.</p>
+    <div class="grid" id="data"></div>
+
+    <div class="notice">
+      <b>Importante:</b> esta demostración no solicita contraseñas, códigos de WhatsApp, cookies, archivos, cámara, micrófono ni ubicación precisa.
+    </div>
+
+    <div class="consent">
+      <label>
+        <input id="consent" type="checkbox">
+        Autorizo, para esta práctica, el envío de estos datos técnicos al servidor de laboratorio. No se enviarán credenciales ni contenido personal.
+      </label>
+      <br><br>
+      <button id="send" disabled>Enviar al laboratorio</button>
+      <div id="status" class="status"></div>
+    </div>
+  </section>
+
+  <div class="footer">Demostración de concienciación sobre QR / quishing</div>
+</div>
+
+<script>
+const API_URL = "REEMPLAZAR_POR_URL_DEL_BACKEND/collect";
+
+function esc(x){
+  return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function collectLocal(){
+  const n=navigator, s=screen;
+  return {
+    user_agent: n.userAgent || null,
+    platform: n.platform || null,
+    language: n.language || null,
+    languages: Array.isArray(n.languages) ? n.languages : null,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
+    timezone_offset_minutes: new Date().getTimezoneOffset(),
+    screen_width: s.width || null,
+    screen_height: s.height || null,
+    color_depth: s.colorDepth || null,
+    pixel_ratio: devicePixelRatio || null,
+    viewport_width: innerWidth || null,
+    viewport_height: innerHeight || null,
+    touch_points: n.maxTouchPoints ?? null,
+    cookies_enabled: n.cookieEnabled ?? null,
+    online: n.onLine ?? null,
+    hardware_concurrency: n.hardwareConcurrency ?? null,
+    device_memory_gb: n.deviceMemory ?? null,
+    do_not_track: n.doNotTrack ?? null,
+    referrer: document.referrer || null,
+    page_url: location.href,
+    client_time: new Date().toISOString()
+  };
+}
+
+let payload = null;
+
+document.getElementById("open").onclick = () => {
+  payload = collectLocal();
+  const labels = [
+    ["Plataforma", payload.platform],
+    ["Navegador / User-Agent", payload.user_agent],
+    ["Idioma", payload.language],
+    ["Idiomas", payload.languages],
+    ["Zona horaria", payload.timezone],
+    ["Pantalla", payload.screen_width+" × "+payload.screen_height],
+    ["Ventana", payload.viewport_width+" × "+payload.viewport_height],
+    ["Densidad de píxeles", payload.pixel_ratio],
+    ["Puntos táctiles", payload.touch_points],
+    ["Cookies habilitadas", payload.cookies_enabled],
+    ["CPU lógica reportada", payload.hardware_concurrency],
+    ["Memoria aproximada reportada", payload.device_memory_gb],
+    ["No rastrear", payload.do_not_track],
+    ["Hora del cliente", payload.client_time]
+  ];
+  document.getElementById("data").innerHTML =
+    labels.map(([k,v]) => `<div class="row"><div class="k">${esc(k)}</div><div class="v">${esc(v ?? "No disponible")}</div></div>`).join("");
+  document.getElementById("landing").style.display="none";
+  document.getElementById("result").style.display="block";
+};
+
+const consent = document.getElementById("consent");
+const send = document.getElementById("send");
+consent.onchange = () => send.disabled = !consent.checked;
+
+send.onclick = async () => {
+  if(!payload || !consent.checked) return;
+  send.disabled = true;
+  document.getElementById("status").textContent = "Enviando al laboratorio…";
+  try{
+    const r = await fetch(API_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json();
+    document.getElementById("status").textContent =
+      j.message || "Recibido por el laboratorio.";
+  }catch(e){
+    document.getElementById("status").textContent =
+      "No se pudo conectar con el backend. La demostración local sigue funcionando.";
+  }finally{
+    send.disabled = false;
+  }
+};
+</script>
+</body>
+</html>
